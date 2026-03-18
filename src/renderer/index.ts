@@ -4,6 +4,7 @@ import Elements from "./elements";
 // This index.ts file is the entry point for the renderer process of the Electron application. It is responsible for handling user interactions in the renderer process, such as input events and button clicks, and updating the DOM accordingly. It also listens for IPC messages from the main process to update the content displayed in the renderer.
 
 // I will run on the web page
+console.log("====> 3) I will run third");
 
 window.api.onFileOpen((content: string, filePath: string) => {
   console.log({ content, filePath });
@@ -14,6 +15,7 @@ window.api.onFileOpen((content: string, filePath: string) => {
 Elements.MarkdownView.addEventListener("input", async () => {
   const markdown = Elements.MarkdownView.value;
   renderMarkdown(markdown);
+  const hasChanges = await window.api.checkForUnsavedChanges(markdown);
 });
 
 Elements.OpenFileButton.addEventListener("click", () => {
@@ -25,4 +27,9 @@ Elements.ExportHtmlButton.addEventListener("click", () => {
   window.api.showExportHtmlDialog(html);
 });
 
-console.log("====> 3) I will run third");
+Elements.SaveMarkdownButton.addEventListener("click", () => {
+  const markdown = Elements.MarkdownView.value;
+  window.api.saveFile(markdown);
+});
+
+Elements.SaveMarkdownButton.disabled = false;
