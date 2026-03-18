@@ -16,6 +16,7 @@ Elements.MarkdownView.addEventListener("input", async () => {
   const markdown = Elements.MarkdownView.value;
   renderMarkdown(markdown);
   const hasChanges = await window.api.checkForUnsavedChanges(markdown);
+  Elements.SaveMarkdownButton.disabled = !hasChanges;
 });
 
 Elements.OpenFileButton.addEventListener("click", () => {
@@ -31,5 +32,3 @@ Elements.SaveMarkdownButton.addEventListener("click", () => {
   const markdown = Elements.MarkdownView.value;
   window.api.saveFile(markdown);
 });
-
-Elements.SaveMarkdownButton.disabled = false;

@@ -220,6 +220,11 @@ ipcMain.on("save-file", async (event, content: string) => {
   await saveFile(browserWindow, content);
 });
 
-ipcMain.handle("has-changes", async (_, content: string) => {
-  return hasChanges(content);
+ipcMain.handle("has-changes", async (event, content: string) => {
+  const browserWindow = BrowserWindow.fromWebContents(event.sender);
+  if (!browserWindow) return;
+
+  const changed = hasChanges(content);
+  browserWindow.setDocumentEdited(changed); // Set the document edited state (shows the dot in the close button on macOS)
+  return changed;
 });
