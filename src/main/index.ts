@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
 import { join, basename } from "path";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -227,4 +227,16 @@ ipcMain.handle("has-changes", async (event, content: string) => {
   const changed = hasChanges(content);
   browserWindow.setDocumentEdited(changed); // Set the document edited state (shows the dot in the close button on macOS)
   return changed;
+});
+
+ipcMain.on("show-in-folder", async () => {
+  if (currentFile.filePath) {
+    shell.showItemInFolder(currentFile.filePath);
+  }
+});
+
+ipcMain.on("open-in-default-application", () => {
+  if (currentFile.filePath) {
+    shell.openPath(currentFile.filePath);
+  }
 });

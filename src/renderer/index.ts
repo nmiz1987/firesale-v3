@@ -10,6 +10,8 @@ window.api.onFileOpen((content: string, filePath: string) => {
   console.log({ content, filePath });
   Elements.MarkdownView.value = content;
   renderMarkdown(content);
+  Elements.ShowFileButton.disabled = false;
+  Elements.OpenInDefaultApplicationButton.disabled = false;
 });
 
 Elements.MarkdownView.addEventListener("input", async () => {
@@ -31,4 +33,12 @@ Elements.ExportHtmlButton.addEventListener("click", () => {
 Elements.SaveMarkdownButton.addEventListener("click", () => {
   const markdown = Elements.MarkdownView.value;
   window.api.saveFile(markdown);
+});
+
+Elements.OpenInDefaultApplicationButton.addEventListener("click", () => {
+  window.api.openInDefaultApplication();
+});
+
+Elements.ShowFileButton.addEventListener("click", () => {
+  window.api.showInFolder();
 });

@@ -30,7 +30,12 @@ contextBridge.exposeInMainWorld("api", {
   },
   checkForUnsavedChanges: async (content: string) => {
     const result = await ipcRenderer.invoke("has-changes", content);
-    console.log({ result });
     return result;
+  },
+  showInFolder: () => {
+    ipcRenderer.send("show-in-folder");
+  },
+  openInDefaultApplication: () => {
+    ipcRenderer.send("open-in-default-application");
   },
 });
