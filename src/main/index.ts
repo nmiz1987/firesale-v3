@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog, ipcMain, shell } from "electron";
+import { app, BrowserWindow, dialog, ipcMain, shell, Menu, MenuItemConstructorOptions, MenuItem } from "electron";
 import { join, basename } from "path";
 import { readFile, writeFile, mkdir } from "node:fs/promises";
 import { existsSync } from "node:fs";
@@ -104,6 +104,8 @@ const createWindow = async () => {
   });
 
   mainWindow.on("close", () => saveWindowState(mainWindow));
+
+  return mainWindow;
 };
 
 app.on("ready", createWindow);
@@ -240,3 +242,37 @@ ipcMain.on("open-in-default-application", () => {
     shell.openPath(currentFile.filePath);
   }
 });
+
+const template: MenuItemConstructorOptions[] = [
+  {
+    label: "File",
+    submenu: [
+      {
+        label: "Open",
+        click: async () => {
+          let browserWindow = BrowserWindow.getFocusedWindow();
+          if (!browserWindow) {
+            browserWindow = await createWindow();
+          }
+
+          showOpenDialog(browserWindow);
+        },
+        accelerator: "CmdOrCtrl+O",
+      },
+    ],
+  },
+  {
+    label: "Edit",
+    role: "editMenu",
+  },
+];
+
+if (process.platform === "darwin") {
+  template.unshift({
+    label: app.name,
+    role: "appMenu",
+  });
+}
+
+const menu = Menu.buildFromTemplate(template);
+Menu.setApplicationMenu(menu);
